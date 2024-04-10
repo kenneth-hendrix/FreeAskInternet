@@ -2,30 +2,14 @@
 
 import time
 import uvicorn
-import sys
-import getopt
-import json
-import os 
-from pprint import pprint
-import requests
-import trafilatura
-from trafilatura import bare_extraction
-from concurrent.futures import ThreadPoolExecutor
-import concurrent
-import requests
-import openai
-import time 
-from datetime import datetime
-from urllib.parse import urlparse
-import platform
-import urllib.parse
 import free_ask_internet
 from pydantic import BaseModel, Field
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-from typing import Any, Dict, List, Literal, Optional, Union
-from sse_starlette.sse import ServerSentEvent, EventSourceResponse
+from typing import List, Literal, Optional, Union
+from sse_starlette.sse import EventSourceResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -153,15 +137,16 @@ def predict(query: str, history: None, model_id: str):
                                    choice_data], object="chat.completion.chunk")
     yield "{}".format(chunk.json(exclude_unset=True))
     yield '[DONE]'
- 
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+async def get_ui():
+    return FileResponse('static/index.html')
 
 def main():
 
-    port = 8000
-
-    
-   
+    port = 80
     uvicorn.run(app, host='0.0.0.0', port=port, workers=1)
 
 

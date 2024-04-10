@@ -1,20 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import json
-import os 
 from pprint import pprint
 import requests
 import trafilatura
-from trafilatura import bare_extraction
 from concurrent.futures import ThreadPoolExecutor
 import concurrent
-import requests
 import openai
-import time 
-from datetime import datetime
 from urllib.parse import urlparse
 import tldextract
-import platform
 import urllib.parse
 
  
@@ -55,7 +48,6 @@ def search_web_ref(query:str, debug=False):
 
                 if url:
                     url_parsed = urlparse(url)
-                    domain = url_parsed.netloc
                     icon_url =  url_parsed.scheme + '://' + url_parsed.netloc + '/favicon.ico'
                     site_name = tldextract.extract(url).domain
  
