@@ -3,6 +3,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles.css">
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <title>Shohom</title>
     </head>
     <body>
@@ -81,7 +82,8 @@
             function appendMessage(sender, message) {
                 const chatBox = document.getElementById('chat');
                 const messageElement = document.createElement('div');
-                messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+                const htmlMessage = marked.parse(message);
+                messageElement.innerHTML = `<strong>${sender}:</strong> ${htmlMessage}`;
                 chatBox.appendChild(messageElement);
                 chatBox.scrollTop = chatBox.scrollHeight;
             }
@@ -136,7 +138,7 @@
             }
 
             #user-input {
-            width: 70%;
+            width: 90%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
