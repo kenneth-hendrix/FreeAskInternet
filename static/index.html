@@ -1,141 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="styles.css">
-        <title>ChatGPT Chatbot</title>
-    </head>
-    <body>
-        <div class="chat-container">
-        <div id="chat" class="chat-box"></div>
-        <input type="text" id="user-input" placeholder="Type your message...">
-        <button onclick="sendMessage()">Send</button>
-        </div>
-        <script>
-            async function sendMessage() {
-                const message = document.getElementById('user-input').value;
-                //document.getElementById('responseBox').innerText = "";
-                appendMessage('You', message);
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Interface</title>
+</head>
+<body>
+    <h2>Send a Message</h2>
+    <input type="text" id="messageInput" placeholder="Type your message here...">
+    <button onclick="sendMessage()">Send</button>
+    <h2>Response</h2>
+    <div id="responseBox"></div>
 
-                async function postAndReadStream(url, data) {
-                    let finalText = ""
-                    
-                    try {
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: data,
-                        });
+    <script>
+        async function sendMessage() {
+            const message = document.getElementById('messageInput').value;
+            document.getElementById('responseBox').innerText = "";
 
-                        if (!response.body) throw new Error('ReadableStream not available');
+            async function postAndReadStream(url, data) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: data,
+                    });
 
-                        const reader = response.body.getReader();
-                        const decoder = new TextDecoder();
+                    if (!response.body) throw new Error('ReadableStream not available');
 
-                        reader.read().then(function processText({ done, value }) {
-                            if (done) {
-                                console.log('Stream complete');
-                                appendMessage('ChatGPT Bot', finalText);
-                                document.getElementById('user-input').value = '';
-                                return;
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+
+                    reader.read().then(function processText({ done, value }) {
+                        if (done) {
+                            console.log('Stream complete');
+                            return;
+                        }
+
+                        const chunkText = decoder.decode(value, {stream: true});
+                        try {
+                            const jsonData = JSON.parse(chunkText.substring(chunkText.indexOf('{')));
+                            const content = jsonData?.choices[0]?.delta?.content;
+                            if (content) {
+                                document.getElementById('responseBox').innerText += content;
                             }
+                        } catch (error) {
+                            //console.error('Error parsing JSON from chunk:', error);
+                        }
 
-                            const chunkText = decoder.decode(value, {stream: true});
-                            try {
-                                const jsonData = JSON.parse(chunkText.substring(chunkText.indexOf('{')));
-                                const content = jsonData?.choices[0]?.delta?.content;
-                                if (content) {
-                                    //document.getElementById('responseBox').innerText += content;
-                                    finalText += content;
-                                }
-                            } catch (error) {
-                                //console.error('Error parsing JSON from chunk:', error);
-                            }
-
-                            reader.read().then(processText);
-                        });
-                    } catch (error) {
-                        appendMessage('ChatGPT Bot', 'Oops! Something went wrong.');
-                        document.getElementById('user-input').value = '';
-                        console.error('Error:', error);
-                    }
+                        reader.read().then(processText);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
                 }
-
-                postAndReadStream('/v1/chat/completions', JSON.stringify({ 
-                        model: 'gpt-3.5-turbo', 
-                        messages: [{ role: 'user', content: message }] 
-                    }));
-
-            }
-            function appendMessage(sender, message) {
-                const chatBox = document.getElementById('chat');
-                const messageElement = document.createElement('div');
-                messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
-                chatBox.appendChild(messageElement);
-                chatBox.scrollTop = chatBox.scrollHeight;
             }
 
+            postAndReadStream('/v1/chat/completions', JSON.stringify({ 
+                    model: 'gpt-3.5-turbo', 
+                    messages: [{ role: 'user', content: message }] 
+                }));
 
-
-            document.addEventListener('DOMContentLoaded', function () {
-                appendMessage('ChatGPT Bot', 'Hello! How can I help you today?');
-
-                function appendMessage(sender, message) {
-                    const chatBox = document.getElementById('chat');
-                    const messageElement = document.createElement('div');
-                    messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
-                    chatBox.appendChild(messageElement);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
-            });
-        </script>
-        <style>
-            body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            }
-
-            .chat-container {
-            max-width: 50%;
-            margin: 50px auto;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            border-radius: 8px;
-            }
-
-            .chat-box {
-            height: auto;
-            overflow-y: scroll;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            }
-
-            #user-input {
-            width: 70%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            }
-
-            button {
-            padding: 10px;
-            margin-left: 10px;
-            background-color: #4caf50;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            }
-
-            button:hover {
-            background-color: #45a049;
-            }
-        </style>
-    </body>
+            // document.getElementById('responseBox').innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
 </html>
