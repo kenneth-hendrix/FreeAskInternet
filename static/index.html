@@ -19,6 +19,7 @@
 
                 async function postAndReadStream(url, data) {
                     let finalText = ""
+                    
                     try {
                         const response = await fetch(url, {
                             method: 'POST',
@@ -50,14 +51,14 @@
                                     finalText += content;
                                 }
                             } catch (error) {
-                                appendMessage('ChatGPT Bot', 'Oops! Something went wrong.');
-                                document.getElementById('user-input').value = '';
                                 //console.error('Error parsing JSON from chunk:', error);
                             }
 
                             reader.read().then(processText);
                         });
                     } catch (error) {
+                        appendMessage('ChatGPT Bot', 'Oops! Something went wrong.');
+                        document.getElementById('user-input').value = '';
                         console.error('Error:', error);
                     }
                 }
@@ -99,7 +100,7 @@
             }
 
             .chat-container {
-            max-width: 400px;
+            max-width: 50%;
             margin: 50px auto;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -108,7 +109,7 @@
             }
 
             .chat-box {
-            height: 300px;
+            height: auto;
             overflow-y: scroll;
             border-bottom: 1px solid #ddd;
             margin-bottom: 10px;
