@@ -111,7 +111,7 @@ def gen_prompt(question,content_list, context_length_limit=11000,debug=False):
         
 
         prompts = '''
-        您是一位由 nash_su 开发的基于搜索引擎返回内容的AI问答助手。您将被提供一个用户问题，并需要撰写一个清晰、简洁且准确的答案。答案必须正确、精确，并以专家的中立和职业语气撰写。请将答案限制在2000个标记内。不要提供与问题无关的信息，也不要重复。如果给出的上下文信息不足，请在相关主题后写上“信息缺失：”。除非是代码、特定的名称或引用编号，答案的语言应与问题相同。以下是上下文的内容集：
+        You are an AI question-and-answer assistant developed based on the content returned by search engines. You will be provided with a user question, and you need to compose a clear, concise, and accurate answer. The answer must be correct, precise, and written in an expert's neutral and professional tone. Please limit your answer to 2000 characters. Do not provide irrelevant information or be repetitive. If the context information provided is insufficient, write "Information missing:" followed by the relevant topic. Except for code, specific names, or reference numbers, the answer's language should be the same as the question's. Here are the contents of the context:
         '''  + "\n\n" + "```" 
         ref_index = 1
 
@@ -124,7 +124,7 @@ def gen_prompt(question,content_list, context_length_limit=11000,debug=False):
             prompts = prompts[0:limit_len]        
         prompts = prompts + '''
 ```
-记住，不要一字不差的重复上下文内容. 回答必须使用简体中文，如果回答很长，请尽量结构化、分段落总结。 下面是用户问题：
+Remember, do not repeat the context verbatim. If the answer is long, try to structure it and summarize in paragraphs. Below is the user question:
 ''' + question  
  
      
@@ -182,7 +182,7 @@ def ask_internet(query:str,  debug=False):
     if True:
         yield "---"
         yield "\n"
-        yield "参考资料:\n"
+        yield "Sources:\n"
         count = 1
         for url_content in content_list:
             url = url_content.get('url')

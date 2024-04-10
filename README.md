@@ -1,4 +1,4 @@
-# FreeAskInternet
+# FreeAskInternet English Version
 
 
 > Running www.perplexity.ai like app complete FREE, LOCAL, PRIVATE and NO GPU NEED on any computer
