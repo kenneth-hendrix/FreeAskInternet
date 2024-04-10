@@ -3,7 +3,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles.css">
-        <title>ChatGPT Chatbot</title>
+        <title>Shohom</title>
     </head>
     <body>
         <div class="chat-container">
@@ -14,7 +14,7 @@
         <script>
             async function sendMessage() {
                 const message = document.getElementById('user-input').value;
-                //document.getElementById('responseBox').innerText = "";
+                document.getElementById('user-input').value = '';
                 appendMessage('You', message);
 
                 async function postAndReadStream(url, data) {
@@ -37,7 +37,7 @@
                         reader.read().then(function processText({ done, value }) {
                             if (done) {
                                 console.log('Stream complete');
-                                appendMessage('ChatGPT Bot', finalText);
+                                appendMessage('Shohom', finalText);
                                 document.getElementById('user-input').value = '';
                                 return;
                             }
@@ -57,7 +57,7 @@
                             reader.read().then(processText);
                         });
                     } catch (error) {
-                        appendMessage('ChatGPT Bot', 'Oops! Something went wrong.');
+                        appendMessage('Shohom', 'Oops! Something went wrong.');
                         document.getElementById('user-input').value = '';
                         console.error('Error:', error);
                     }
@@ -80,7 +80,7 @@
 
 
             document.addEventListener('DOMContentLoaded', function () {
-                appendMessage('ChatGPT Bot', 'Hello! How can I help you today?');
+                appendMessage('Shohom', 'Hello! How can I help you today?');
 
                 function appendMessage(sender, message) {
                     const chatBox = document.getElementById('chat');
@@ -109,7 +109,7 @@
             }
 
             .chat-box {
-            height: auto;
+            height: 700px;
             overflow-y: scroll;
             border-bottom: 1px solid #ddd;
             margin-bottom: 10px;
