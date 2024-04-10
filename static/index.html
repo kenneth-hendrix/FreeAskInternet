@@ -7,7 +7,10 @@
     </head>
     <body>
         <div class="chat-container">
-        <div id="chat" class="chat-box"></div>
+        <div id="chat" class="chat-box">
+            <div id="overlay" style="display: none;"></div>
+            <div id="loader" class="loader" style="display: none;"></div>
+        </div>
         <input type="text" id="user-input" placeholder="Type your message...">
         <button onclick="sendMessage()">Send</button>
         </div>
@@ -16,6 +19,8 @@
                 const message = document.getElementById('user-input').value;
                 document.getElementById('user-input').value = '';
                 appendMessage('You', message);
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('loader').style.display = 'block';
 
                 async function postAndReadStream(url, data) {
                     let finalText = ""
@@ -36,6 +41,8 @@
 
                         reader.read().then(function processText({ done, value }) {
                             if (done) {
+                                document.getElementById('overlay').style.display = 'none';
+                                document.getElementById('loader').style.display = 'none';
                                 console.log('Stream complete');
                                 appendMessage('Shohom', finalText);
                                 document.getElementById('user-input').value = '';
@@ -58,6 +65,8 @@
                         });
                     } catch (error) {
                         appendMessage('Shohom', 'Oops! Something went wrong.');
+                        document.getElementById('overlay').style.display = 'none';
+                        document.getElementById('loader').style.display = 'none';
                         document.getElementById('user-input').value = '';
                         console.error('Error:', error);
                     }
@@ -135,6 +144,40 @@
 
             button:hover {
             background-color: #45a049;
+            }
+
+            .loader {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #4caf50;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            position: absolute;
+            top: 40%;
+            left: 40%;
+            transform: translate(-40%, -40%);
+            display: none;
+            z-index: 2;
+            }
+
+            @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+            }
+
+            .chat-box {
+            position: relative;
+            }
+            #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 1;
+            display: none;
             }
         </style>
     </body>
