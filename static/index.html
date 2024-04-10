@@ -15,6 +15,7 @@
         async function sendMessage() {
             const message = document.getElementById('messageInput').value;
             document.getElementById('responseBox').innerText = "";
+            document.getElementById('messageInput').value = "";
 
             async function postAndReadStream(url, data) {
                 try {
