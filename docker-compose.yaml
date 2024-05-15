@@ -1,11 +1,21 @@
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    restart: always
+
   backend:
-    image: englishsearch:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     depends_on:
       - freegpt35
     restart: on-failure
     ports:
-      - "80:80"
+      - "8000:8000"
 
   freegpt35:
     image: missuo/freegpt35:latest
